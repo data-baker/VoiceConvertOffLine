@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="speaker">
+        <item>萝莉音</item>
+        <item>大叔</item>
+        <item>搞怪</item>
+        <item>空灵</item>
+        <item>霸王龙</item>
+        <item>重金属</item>
+    </string-array>
+</resources>
