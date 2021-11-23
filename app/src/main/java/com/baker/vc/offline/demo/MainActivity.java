@@ -31,9 +31,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks  {
-    //请填写您自己的clientId
+    //TODO 请填写您自己的clientId
     private final String clientId = "";
-    //请填写您自己的clientSecret
+    //TODO 请填写您自己的clientSecret
     private final String clientSecret = "";
 
     private String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -136,9 +136,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (isFirst) {
-                    return;
-                }
+//                if (isFirst) {
+//                    return;
+//                }
                 if (manager != null) {
                     //demo示例中是为了展示效果。故在选择完音色后实现了转换效果。真实需求中只需要完成声音选择设置即可。
                     manager.startConvertByPCM();
