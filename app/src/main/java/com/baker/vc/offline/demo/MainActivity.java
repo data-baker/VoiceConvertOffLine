@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks  {
+public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     //TODO 请填写您自己的clientId
     private final String clientId = "";
     //TODO 请填写您自己的clientSecret
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     private String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
-    private String[] voiceName = new String[]{"Vc_luoli", "Vc_dashu", "Vc_gaoguai", "Vc_kongling", "Vc_bawanglong", "Vc_zhongjinshu"};
+    private String[] voiceName = new String[]{"Vc_luoli", "Vc_dashu", "Vc_gaoguai", "Vc_kongling", "Vc_bawanglong", "Vc_zhongjinshu", "Vc_jixieyin"};
     private Spinner spinner;
     private ImageView imgRecord;
     private TextView tvResult;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
      * isFirst 的作用是控制第一次进页面，无原始录音音频，所以无法直接转换的情况。
      */
     private boolean isFirst = true;
+    private boolean isSecond = true;
+    private long time = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +85,10 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
         @Override
         public void onResult(byte[] audioData, int endFlag) {
-
+            if (audioData != null && isSecond) {
+                isSecond = false;
+                Log.e("hsj", "cast = " + (System.currentTimeMillis() - time));
+            }
         }
 
         @Override
@@ -122,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
         @Override
         public void onError(String errorCode, String errorMsg) {
+            Log.e("hsj", "errorCode = " + errorCode + ", errorMsg = " + errorMsg);
             Message message = Message.obtain();
             message.what = 2;
             message.obj = errorCode + ", " + errorMsg;
@@ -293,11 +300,21 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                         // new一个byte数组用来存一些字节数据，大小为缓冲区大小
                         byte[] audiodata;
                         FileInputStream inputStream = new FileInputStream(file);
+
+                        isFirst = true;
+                        isSecond = true;
+
                         while ((readsize = inputStream.read(audiodata = new byte[2048], 0, 2048)) != -1) {
                             if (readsize > 0) {
+
+
                                 //每次自增1，从0开始发送数据。
                                 mIdx.addAndGet(1);
                                 if (manager != null) {
+                                    if (isFirst) {
+                                        isFirst = false;
+                                        time = System.currentTimeMillis();
+                                    }
                                     manager.sendData(audiodata, mIdx.get());
                                 }
                             }
